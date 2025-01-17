@@ -4,8 +4,7 @@ venv:
 
 dev-deps:
 	@echo "Compiling and Installing dev-requirements.txt..."
-	@uv pip compile -o requirements.txt requirements.in
-	@uv pip compile -o dev-requirements.txt dev-requirements.in
+	@uv pip compile -o dev-requirements.txt requirements.in dev-requirements.in
 	@uv pip install -r dev-requirements.txt
 
 deps:
@@ -28,6 +27,15 @@ stop:
 down:
 	@echo "Stopping and removing the server..."
 	@docker compose down --remove-orphans --volumes
+
+
+migrate:
+	@echo "Running migrations..."
+	@docker compose exec app python code/manage.py migrate
+
+migration:
+	@echo "Creating migrations..."
+	@docker compose exec app python code/manage.py makemigrations
 
 ruff:
   # Run ruff checks
