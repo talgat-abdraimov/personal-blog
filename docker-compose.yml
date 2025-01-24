@@ -1,13 +1,37 @@
 x-common-variables: &common-variables
-  DEBUG: False
+  DEBUG: true
+  DATABASE_URL: postgres://postgres:postgres@db/postgres
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+
     ports:
-      - "8001:8000"
+      - "8002:8000"
     volumes:
       - ./code:/app/code
     environment:
       <<: *common-variables
     command: sh -c "cd code && python manage.py runserver 0.0.0.0:8000"
+
+  db:
+    image: postgres:alpine
+    ports:
+      - "5406:5432"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    command:
+      ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  default:
+    name: personal_blog
+    external: true

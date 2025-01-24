@@ -4,5 +4,9 @@ asgiref==3.8.1
     # via django
 django==5.1.5
     # via -r requirements.in
+psycopg==3.2.4
+    # via -r requirements.in
+psycopg-binary==3.2.4
+    # via psycopg
 sqlparse==0.5.3
     # via django
