@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  My articles
+{% endblock %}
+
+
+{% block body %}
+  {% if article %}
+    <h1>{{ article.title }}</h1>
+
+    <p>{{ article.content }}</p>
+
+  {% else %}
+    <h1>Article not found</h1>
+  {% endif %}
+
+
+{% endblock %}
