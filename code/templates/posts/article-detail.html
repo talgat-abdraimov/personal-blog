@@ -1,15 +1,25 @@
 {% extends 'base.html' %}
+{% load custom_filters  %}
 
 {% block title %}
-  My articles
+  {{ article.title|default:"Article Detail" }}
 {% endblock %}
 
 
 {% block body %}
-  {% if article %}
-    <h1>{{ article.title }}</h1>
 
-    <p>{{ article.content }}</p>
+  {% if article %}
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-header">
+        <h1>{{ article.title }}</h1>
+      </div>
+      <div class="card-body">
+        <p>{% get_article_content article  %}</p>
+      </div>
+
+    </div>
+  </div>
 
   {% else %}
     <h1>Article not found</h1>

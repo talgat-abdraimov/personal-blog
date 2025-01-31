@@ -1,27 +1,22 @@
 from django.shortcuts import render
 
+from .models import Post
+
 
 def about(request):
     return render(request, 'posts/about.html')
 
 
-articles_list = [
-    {'id': 1, 'title': 'First article', 'content': 'This is the first article content'},
-    {'id': 2, 'title': 'Second article', 'content': 'This is the second article content'},
-    {'id': 3, 'title': 'Third article', 'content': 'This is the third article content'},
-]
-
-
 def articles(request):
+    articles_list = Post.objects.all()
+
     return render(request, 'posts/article-list.html', context={'articles': articles_list})
 
 
-def article_detail(request, article_id: int):
-    for article in articles_list:
-        if article['id'] == article_id:
-            return render(request, 'posts/article-detail.html', context={'article': article})
+def article_detail(request, slug: str):
+    article = Post.objects.get(slug=slug)
 
-    return render(request, 'posts/article-detail.html')
+    return render(request, 'posts/article-detail.html', context={'article': article})
 
 
 def index(request):
