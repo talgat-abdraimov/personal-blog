@@ -1,10 +1,14 @@
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 
 class Post(models.Model):
     title = models.CharField(max_length=120, verbose_name=_('Название'))  # VARCHAR
     content = models.TextField(verbose_name=_('Контент'))  # TEXT
+    slug = models.SlugField(
+        max_length=120, unique=True, verbose_name=_('Слаг'), null=True, blank=True
+    )  # VARCHAR
     published_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата публикации'))  # DATETIME
 
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)  # INT
@@ -18,6 +22,12 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+
+        return super().save(*args, **kwargs)
 
 
 class Category(models.Model):
