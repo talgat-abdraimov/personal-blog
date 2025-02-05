@@ -19,6 +19,25 @@
       </div>
 
     </div>
+
+    <h2>Комментарии</h2>
+    <div class="card mt-3">
+      <ul class="list-group">
+        {% for comment in article.comments.all %}
+          <li class="list-group-item">
+            <p>{{ comment.content }}</p>
+            <small>{{ comment.created_at }}</small>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <h3>Добавить комментарий</h3>
+      <form method="post">
+        {% csrf_token  %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Отправить</button>
+      </form>
+    </div>
   </div>
 
   {% else %}
