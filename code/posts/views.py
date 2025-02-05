@@ -1,23 +1,43 @@
 from django.shortcuts import render
+from django.views import View
+from django.views.generic.edit import FormView
 
+from .forms import ContactForm
 from .models import Post
 
 
-def about(request):
-    return render(request, 'posts/about.html')
+# get, post
+class ArticleView(View):
+    def dispatch(self, request, *args, **kwargs):
+        if request.method.lower() in self.http_method_names:
+            if request.method.lower() == 'get' and 'slug' in kwargs:
+                handler = getattr(self, 'get_detail', self.http_method_not_allowed)
+
+            elif request.method.lower() == 'get':
+                handler = getattr(self, 'list', self.http_method_not_allowed)
+
+            else:
+                handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
+
+        else:
+            handler = self.http_method_not_allowed
+
+        return handler(request, *args, **kwargs)
+
+    def list(self, request):
+        articles = Post.objects.all()
+
+        return render(request, 'posts/article-list.html', context={'articles': articles})
+
+    def get_detail(self, request, slug: str):
+        article = Post.objects.get(slug=slug)
+
+        form = ContactForm()
+
+        return render(request, 'posts/article-detail.html', context={'article': article, 'form': form})
 
 
-def articles(request):
-    articles_list = Post.objects.all()
-
-    return render(request, 'posts/article-list.html', context={'articles': articles_list})
-
-
-def article_detail(request, slug: str):
-    article = Post.objects.get(slug=slug)
-
-    return render(request, 'posts/article-detail.html', context={'article': article})
-
-
-def index(request):
-    return render(request, 'base.html', context={'name': 'John Doe'})
+class ContactView(FormView):
+    form_class = ContactForm
+    template_name = 'contact.html'
+    success_url = '/'
