@@ -41,4 +41,3 @@ class ContactView(FormView):
     form_class = ContactForm
     template_name = 'contact.html'
     success_url = '/'
-    success_message = 'Thank you for your message!'
