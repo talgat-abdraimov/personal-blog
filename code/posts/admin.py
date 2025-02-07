@@ -31,7 +31,7 @@ class PublishedFilter(admin.SimpleListFilter):
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     actions = ('mark_as_published',)
-    list_display = ('title', 'slug', 'status_display', 'published_at')
+    list_display = ('title', 'human_readable_title', 'status_display', 'published_at')
 
     inlines = (CatetoryInline,)
 
@@ -41,7 +41,7 @@ class PostAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Основная информация', {'fields': ('title', 'content')}),
-        ('Дополнительная информация', {'fields': ('slug', 'published_at', 'author')}),
+        ('Дополнительная информация', {'fields': ('human_readable_title', 'published_at', 'author')}),
     )
 
     def status_display(self, obj: Post):

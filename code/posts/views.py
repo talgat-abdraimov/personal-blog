@@ -1,40 +1,32 @@
-from django.shortcuts import render
-from django.views import View
-from django.views.generic.edit import FormView
+from django.views.generic import CreateView, DetailView, FormView, ListView
 
 from .forms import ContactForm
 from .models import Post
 
+# ListView, DetailView, CreateView # UpdateView, DeleteView
 
-# get, post
-class ArticleView(View):
-    def dispatch(self, request, *args, **kwargs):
-        if request.method.lower() in self.http_method_names:
-            if request.method.lower() == 'get' and 'slug' in kwargs:
-                handler = getattr(self, 'get_detail', self.http_method_not_allowed)
 
-            elif request.method.lower() == 'get':
-                handler = getattr(self, 'list', self.http_method_not_allowed)
+class ArticleListView(ListView):
+    model = Post
+    template_name = 'posts/article-list.html'
+    context_object_name = 'posts'
+    paginate_by = 1
+    queryset = Post.objects.filter(published_at__isnull=False)
 
-            else:
-                handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
 
-        else:
-            handler = self.http_method_not_allowed
+class ArticleDetailView(DetailView):
+    model = Post
+    template_name = 'posts/article-detail.html'
+    context_object_name = 'article'
+    slug_field = 'human_readable_title'
+    slug_url_kwarg = 'human_readable_title'
 
-        return handler(request, *args, **kwargs)
 
-    def list(self, request):
-        articles = Post.objects.all()
-
-        return render(request, 'posts/article-list.html', context={'articles': articles})
-
-    def get_detail(self, request, slug: str):
-        article = Post.objects.get(slug=slug)
-
-        form = ContactForm()
-
-        return render(request, 'posts/article-detail.html', context={'article': article, 'form': form})
+class ArticleCreateView(CreateView):
+    model = Post
+    fields = ('title', 'content', 'author')
+    template_name = 'posts/article-create.html'
+    success_url = '/articles/'
 
 
 class ContactView(FormView):
