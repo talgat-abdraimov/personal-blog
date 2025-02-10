@@ -1,20 +1,29 @@
 from django.views.generic import CreateView, DetailView, FormView, ListView
 
 from .forms import ContactForm
+from .mixins import AuthorRequiredMixin
 from .models import Post
-
-# ListView, DetailView, CreateView # UpdateView, DeleteView
 
 
 class ArticleListView(ListView):
     model = Post
     template_name = 'posts/article-list.html'
-    context_object_name = 'posts'
+    context_object_name = 'articles'
     paginate_by = 1
     queryset = Post.objects.filter(published_at__isnull=False)
 
+    def get_queryset(self):
+        articles = super().get_queryset()
 
-class ArticleDetailView(DetailView):
+        author = self.request.GET.get('author')
+
+        if author:
+            articles = articles.filter(author__username=author)
+
+        return articles
+
+
+class ArticleDetailView(AuthorRequiredMixin, DetailView):
     model = Post
     template_name = 'posts/article-detail.html'
     context_object_name = 'article'
