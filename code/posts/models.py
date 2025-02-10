@@ -10,17 +10,20 @@ class Post(models.Model):
     content = models.TextField(verbose_name=_('Контент'))  # TEXT
     human_readable_title = models.SlugField(
         max_length=120, unique=True, verbose_name=_('Слаг'), null=True, blank=True
-    )  # VARCHAR
+    )
     published_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата публикации'))  # DATETIME
 
-    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)  # INT
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='posts')  # INT
 
     created_at = models.DateTimeField(auto_now_add=True)  # DATETIME
     updated_at = models.DateTimeField(auto_now=True)  # DATETIME
 
+    views = models.PositiveIntegerField(default=0, verbose_name=_('Просмотры'))  # INT
+
     class Meta:
         verbose_name = _('Пост')
         verbose_name_plural = _('Посты')
+        ordering = ['-published_at']
 
     def __str__(self):
         return self.title

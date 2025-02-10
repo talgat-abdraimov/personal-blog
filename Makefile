@@ -28,7 +28,6 @@ down:
 	@echo "Stopping and removing the server..."
 	@docker compose down --remove-orphans --volumes
 
-
 migrate:
 	@echo "Running migrations..."
 	@docker compose exec app python code/manage.py migrate
@@ -36,6 +35,10 @@ migrate:
 migration:
 	@echo "Creating migrations..."
 	@docker compose exec app python code/manage.py makemigrations
+
+shell:
+	@echo "Starting the shell..."
+	@docker compose exec app python code/manage.py shell
 
 ruff:
   # Run ruff checks
