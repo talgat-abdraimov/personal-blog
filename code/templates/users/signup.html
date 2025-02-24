@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ article.title|default:"Регистрация" }}
+{% endblock %}
+
+
+{% block body %}
+
+  <div class="container mt-5">
+    <h1>Регистрация</h1>
+    <form method="post" class="mt-4">
+      {% csrf_token  %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </form>
+  </div>
+
+
+
+{% endblock %}

@@ -13,7 +13,7 @@ class Post(models.Model):
     )  # VARCHAR
     published_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата публикации'))  # DATETIME
 
-    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)  # INT
+    author = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE)  # INT
 
     created_at = models.DateTimeField(auto_now_add=True)  # DATETIME
     updated_at = models.DateTimeField(auto_now=True)  # DATETIME
